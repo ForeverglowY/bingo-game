@@ -5,6 +5,9 @@
     <groupId>com.fc</groupId>
     <artifactId>bingo-game</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <modules>
+        <module>common</module>
+    </modules>
     <name>bingo-game</name>
     <description>Demo project for Spring Boot</description>
     <packaging>pom</packaging>
@@ -17,10 +20,25 @@
         <spring-cloud-alibaba.version>2.2.2.RELEASE</spring-cloud-alibaba.version>
         <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
         <swagger.version>2.7.0</swagger.version>
+        <jwt.version>0.7.0</jwt.version>
+        <json.version>20170516</json.version>
+
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!--json-->
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
+            </dependency>
+            <!-- JWT -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
             <!--swagger-->
             <dependency>
                 <groupId>io.springfox</groupId>
@@ -37,6 +55,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>2.3.7.RELEASE</version>
             </dependency>
             <!--spring-security-->
             <dependency>
@@ -47,6 +66,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
+                <version>2.3.7.RELEASE</version>
             </dependency>
             <!--fastjson-->
             <dependency>
@@ -103,6 +123,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
+                <version>1.18.24</version>
                 <optional>true</optional>
             </dependency>
             <dependency>
