@@ -7,6 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>common</module>
+        <module>service</module>
     </modules>
     <name>bingo-game</name>
     <description>Demo project for Spring Boot</description>
@@ -22,7 +23,8 @@
         <swagger.version>2.7.0</swagger.version>
         <jwt.version>0.7.0</jwt.version>
         <json.version>20170516</json.version>
-
+        <commons-fileupload.version>1.3.1</commons-fileupload.version>
+        <commons-io.version>2.6</commons-io.version>
     </properties>
 
     <dependencyManagement>
@@ -78,11 +80,26 @@
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>2.2.2.RELEASE</version>
             </dependency>
             <!--nacos-discovery-->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>2.2.2.RELEASE</version>
+            </dependency>
+            <!--文件上传-->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons-fileupload.version}</version>
+            </dependency>
+
+            <!--commons-io-->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
             </dependency>
             <!--mybatis-plus-->
             <dependency>
@@ -99,6 +116,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>2.2.6.RELEASE</version>
             </dependency>
             <!--devtools-->
             <dependency>
@@ -111,6 +129,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.30</version>
                 <scope>runtime</scope>
             </dependency>
             <!--配置-->
