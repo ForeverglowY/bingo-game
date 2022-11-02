@@ -9,7 +9,6 @@
         <module>common</module>
         <module>service</module>
         <module>api_gateway</module>
-        <module>api_gateway</module>
     </modules>
     <name>bingo-game</name>
     <description>Demo project for Spring Boot</description>
@@ -145,10 +144,10 @@
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>3.4.2</version>
             </dependency>
-            <!--com.fc.gateway-->
+            <!--gateway-->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-com.fc.gateway</artifactId>
+                <artifactId>spring-cloud-starter-gateway</artifactId>
                 <version>2.2.0.RELEASE</version>
             </dependency>
             <!--openfeign-->
