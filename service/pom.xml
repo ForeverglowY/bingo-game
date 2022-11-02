@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>service-management</module>
-        <module>service-com.fc.gateway</module>
     </modules>
 
     <dependencies>
