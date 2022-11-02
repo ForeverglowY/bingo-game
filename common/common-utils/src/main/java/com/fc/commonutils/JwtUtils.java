@@ -87,4 +87,10 @@ public class JwtUtils {
         Claims claims = claimsJws.getBody();
         return (String) claims.get("id");
     }
+    public static String getMemberIdByJwtToken(String token) {
+        if (StringUtils.isEmpty(token)) return "";
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+        return (String) claims.get("id");
+    }
 }
