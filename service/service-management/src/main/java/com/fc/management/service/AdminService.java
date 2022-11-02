@@ -9,5 +9,5 @@ import com.fc.management.entity.vo.AdminVo;
  */
 public interface AdminService extends IService<Admin> {
 
-    String login(AdminVo adminVo);
+    String login(String username, String password);
 }
