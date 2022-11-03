@@ -7,8 +7,10 @@ import com.fc.management.mapper.GameMapper;
 import org.springframework.stereotype.Service;
 
 /**
- *
- */
+* @author V-Savior
+* @description 针对表【game】的数据库操作Service实现
+* @createDate 2022-11-03 11:40:30
+*/
 @Service
 public class GameServiceImpl extends ServiceImpl<GameMapper, Game>
     implements GameService{
