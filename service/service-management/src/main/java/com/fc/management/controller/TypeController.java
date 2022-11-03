@@ -45,6 +45,15 @@ public class TypeController {
     }
 
     /**
+     * 查询所有 type
+     */
+    @GetMapping("/list")
+    public R getAll() {
+        List<Type> list = typeService.list();
+        return R.ok().data("typeList", list);
+    }
+
+    /**
      * 根据 id 查询 type
      * @param id id
      * @return R

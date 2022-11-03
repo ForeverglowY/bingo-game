@@ -32,13 +32,13 @@ public class Type implements Serializable {
     private Byte isDeleted;
 
     /**
-     * 订单创建时间
+     * 类型创建时间
      */
     @TableField(value = "gmt_create", fill = FieldFill.INSERT)
     private Date gmtCreate;
 
     /**
-     * 订单修改时间
+     * 类型修改时间
      */
     @TableField(value = "gmt_modified", fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
