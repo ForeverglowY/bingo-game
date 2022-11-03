@@ -1,0 +1,20 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: service-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: service-management
+          uri: lb://service-management
+          predicates:
+            - Path=/management/** # 路径匹配
+
+    nacos:
+      discovery:
+        server-addr: 1.116.179.183:8848
