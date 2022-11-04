@@ -15,7 +15,12 @@ spring:
     nacos:
       discovery:
         server-addr: 1.116.179.183:8848
+  redis:
+    host: 1.116.179.183
+    password: root
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+

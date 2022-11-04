@@ -74,6 +74,10 @@ public class TypeController {
      */
     @PostMapping("/save")
     public R save(@RequestBody Type type) {
+        boolean isExist = typeService.isExist(type);
+        if (isExist) {
+            return R.error().message("已存在该类型, 请重新输入");
+        }
         boolean save = typeService.save(type);
         return save ? R.ok().message("添加成功") : R.error().message("添加失败");
     }

@@ -1,0 +1,27 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: service-oss
+
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 1.116.179.183:8848
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+#阿里云oss
+#  Endpoint
+aliyun:
+  oss:
+    file:
+      endpoint: oss-cn-hangzhou.aliyuncs.com
+      accessKeyId: LTAI5tQYP53Cy1ZsRoTxFsFB
+      accessKeySecret: s2F13nzyNUkTTPPzWTh24qDY7ze96S
+      bucketName: bingo-file-fc
+

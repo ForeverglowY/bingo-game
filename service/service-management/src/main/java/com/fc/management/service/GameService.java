@@ -10,4 +10,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface GameService extends IService<Game> {
 
+    String saveInfo(Game game);
 }

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -63,11 +65,23 @@ public class Game implements Serializable {
     private Integer status;
 
     /**
+     * 游戏介绍详情
+     */
+    @TableField(value = "details")
+    private String details;
+
+    /**
      * 
      */
     @TableField(value = "is_deleted")
     @TableLogic
     private Integer isDeleted;
+
+    /**
+     * 游戏的banner集合
+     */
+    @TableField(exist = false)
+    private List<GameBanner> gameBannerList;
 
     /**
      * 创建时间
@@ -104,6 +118,7 @@ public class Game implements Serializable {
             && (this.getPicture() == null ? other.getPicture() == null : this.getPicture().equals(other.getPicture()))
             && (this.getIntro() == null ? other.getIntro() == null : this.getIntro().equals(other.getIntro()))
             && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+            && (this.getDetails() == null ? other.getDetails() == null : this.getDetails().equals(other.getDetails()))
             && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()));
@@ -121,6 +136,7 @@ public class Game implements Serializable {
         result = prime * result + ((getPicture() == null) ? 0 : getPicture().hashCode());
         result = prime * result + ((getIntro() == null) ? 0 : getIntro().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getDetails() == null) ? 0 : getDetails().hashCode());
         result = prime * result + ((getIsDeleted() == null) ? 0 : getIsDeleted().hashCode());
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
@@ -141,6 +157,7 @@ public class Game implements Serializable {
         sb.append(", picture=").append(picture);
         sb.append(", intro=").append(intro);
         sb.append(", status=").append(status);
+        sb.append(", details=").append(details);
         sb.append(", isDeleted=").append(isDeleted);
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);

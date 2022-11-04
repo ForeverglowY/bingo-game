@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fc.management.mapper.GameBannerMapper">
+
+    <resultMap id="BaseResultMap" type="com.fc.management.entity.GameBanner">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <id property="gameId" column="game_id" jdbcType="VARCHAR"/>
+            <result property="picture" column="picture" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+            <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,game_id,picture,
+        is_deleted,gmt_create,gmt_modified
+    </sql>
+</mapper>
