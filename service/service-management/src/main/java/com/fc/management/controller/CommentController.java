@@ -1,16 +1,22 @@
 package com.fc.management.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fc.commonutils.R;
 import com.fc.management.entity.Comment;
+import com.fc.management.entity.User;
+import com.fc.management.entity.vo.CommentQuery;
+import com.fc.management.entity.vo.CommentVo;
 import com.fc.management.service.CommentService;
+import com.fc.management.service.UserService;
 import com.fc.servicebase.exceptionhandler.BingoException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ZhangChen        Email:zhangchen_savior@163.com
@@ -23,22 +29,53 @@ import java.util.Map;
 public class CommentController {
 
     @Autowired
-    private CommentService commentService ;
+    private CommentService commentService;
+    @Autowired
+    private UserService userService;
 
     /**
-     *
      * @param current 当前页码
      * @param limit   每页条数
      * @return 查询结果 类型 list
      */
-    @GetMapping("/list/{current}/{limit}")
+    @PostMapping("/list/{current}/{limit}")
     public R list(@PathVariable("current") Long current,
-                  @PathVariable("limit") Long limit) {
+                  @PathVariable("limit") Long limit,
+                  @RequestBody(required = false) CommentQuery commentQuery) {
         //创建 Page 对象
         Page<Comment> page = new Page<>(current, limit);
-        commentService.page(page, null);
+        QueryWrapper<Comment> wrapper = new QueryWrapper<>();
+        String gameId;
+        String username;
+        Date begin;
+        Date end;
+        if (commentQuery != null) {
+            gameId = commentQuery.getGameId();
+            username = commentQuery.getUsername();
+            begin = commentQuery.getBegin();
+            end = commentQuery.getEnd();
+            if (!StringUtils.isEmpty(gameId)) {
+                wrapper.eq("game_id", gameId);
+            }
+            if (!StringUtils.isEmpty(username)) {
+                wrapper.eq("username", username);
+            }
+            if (!StringUtils.isEmpty(begin)) {
+                wrapper.gt("gmt_create", begin);
+            }
+            if (!StringUtils.isEmpty(end)) {
+                wrapper.lt("gmt_create", end);
+            }
+        }
+        wrapper.eq("target_id", "");
+        commentService.page(page, wrapper);
         long total = page.getTotal();
         List<Comment> records = page.getRecords();
+        for (Comment record : records) {
+            List<Comment> comments = commentService.childrenList(record.getId());
+            record.setChildren(comments);
+        }
+
         Map<String, Object> map = new HashMap<>();
         map.put("total", total);
         map.put("rows", records);
@@ -48,6 +85,7 @@ public class CommentController {
 
     /**
      * 根据 id 查询 comment
+     *
      * @param id id
      * @return R
      */
@@ -62,6 +100,7 @@ public class CommentController {
 
     /**
      * 添加评论
+     *
      * @param comment 评论对象
      * @return R
      */
@@ -73,6 +112,7 @@ public class CommentController {
 
     /**
      * 根据 id 删除 comment
+     *
      * @param id id
      * @return R
      */
@@ -84,6 +124,7 @@ public class CommentController {
 
     /**
      * 修改 comment
+     *
      * @param comment 评论
      * @return R
      */
@@ -92,4 +133,6 @@ public class CommentController {
         boolean b = commentService.updateById(comment);
         return b ? R.ok().message("修改成功") : R.error().message("修改失败");
     }
+
+
 }

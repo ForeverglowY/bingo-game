@@ -20,4 +20,7 @@
         game_id,target_id,is_deleted,
         gmt_create,gmt_modified
     </sql>
+    <select id="hasChildren" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(*) from comment where target_id = #{id}
+    </select>
 </mapper>

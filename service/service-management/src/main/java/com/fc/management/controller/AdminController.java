@@ -2,6 +2,7 @@ package com.fc.management.controller;
 
 import com.fc.commonutils.JwtUtils;
 import com.fc.commonutils.R;
+import com.fc.management.entity.Admin;
 import com.fc.management.entity.vo.AdminVo;
 import com.fc.management.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,10 @@ public class AdminController {
         return R.ok();
     }
 
+    @PostMapping("/register")
+    public R register(@RequestBody Admin admin) {
+        adminService.save(admin);
+        return R.ok();
+    }
 
 }

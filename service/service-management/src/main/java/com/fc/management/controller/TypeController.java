@@ -49,7 +49,7 @@ public class TypeController {
      */
     @GetMapping("/list")
     public R getAll() {
-        List<Type> list = typeService.list();
+        List<Type> list = typeService.getList();
         return R.ok().data("typeList", list);
     }
 

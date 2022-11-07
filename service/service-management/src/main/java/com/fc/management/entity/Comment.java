@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @TableName comment
@@ -41,6 +42,12 @@ public class Comment implements Serializable {
      */
     @TableField(value = "target_id")
     private String targetId;
+
+    /**
+     * 回复他的评论
+     */
+    @TableField(exist = false)
+    private List<Comment> children;
 
     /**
      *

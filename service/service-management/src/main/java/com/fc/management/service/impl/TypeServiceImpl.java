@@ -6,7 +6,11 @@ import com.fc.management.entity.Type;
 import com.fc.management.service.TypeService;
 import com.fc.management.mapper.TypeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  *
@@ -25,6 +29,12 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type>
         wrapper.eq("name", name);
         Type one = typeMapper.selectOne(wrapper);
         return one != null;
+    }
+
+    @Override
+    @Cacheable(value = "type", key = "'selectTypeList'")
+    public List<Type> getList() {
+        return typeMapper.selectList(null);
     }
 }
 
