@@ -1,8 +1,11 @@
 package com.fc.management.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fc.commonutils.R;
+import com.fc.management.entity.Game;
 import com.fc.management.entity.Type;
+import com.fc.management.service.GameService;
 import com.fc.management.service.TypeService;
 import com.fc.servicebase.exceptionhandler.BingoException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,8 @@ public class TypeController {
 
     @Autowired
     private TypeService typeService;
+    @Autowired
+    private GameService gameService;
 
     /**
      *
@@ -90,6 +95,10 @@ public class TypeController {
     @DeleteMapping("/{id}")
     public R delete(@PathVariable("id") String id) {
         boolean b = typeService.removeById(id);
+        //删除该类型的游戏
+        QueryWrapper<Game> wrapper = new QueryWrapper<>();
+        wrapper.eq("type_id", id);
+        gameService.remove(wrapper);
         return b ? R.ok().message("删除成功") : R.error().message("删除失败");
     }
 

@@ -2,20 +2,20 @@ package com.fc.management.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fc.commonutils.JwtUtils;
 import com.fc.commonutils.R;
 import com.fc.management.entity.Comment;
 import com.fc.management.entity.User;
 import com.fc.management.entity.vo.CommentQuery;
-import com.fc.management.entity.vo.CommentVo;
 import com.fc.management.service.CommentService;
+import com.fc.management.service.GameService;
 import com.fc.management.service.UserService;
 import com.fc.servicebase.exceptionhandler.BingoException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -32,6 +32,8 @@ public class CommentController {
     private CommentService commentService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private GameService gameService;
 
     /**
      * @param current 当前页码
@@ -68,10 +70,18 @@ public class CommentController {
             }
         }
         wrapper.eq("target_id", "");
+        wrapper.orderByAsc("gmt_modified");
         commentService.page(page, wrapper);
         long total = page.getTotal();
         List<Comment> records = page.getRecords();
+        if (records == null) {
+            return R.ok().message("评论列表为空");
+        }
         for (Comment record : records) {
+            record.setGameName(gameService.getById(record.getGameId()).getName());
+            User user = userService.getById(record.getUserId());
+            record.setUsername(user.getUsername());
+            record.setAvatar(user.getAvatar());
             List<Comment> comments = commentService.childrenList(record.getId());
             record.setChildren(comments);
         }
@@ -81,6 +91,27 @@ public class CommentController {
         map.put("rows", records);
 
         return R.ok().data(map);
+    }
+
+    @GetMapping("/comment/{gameId}")
+    public R getCommentListByGameId(@PathVariable("gameId") String gameId) {
+        QueryWrapper<Comment> wrapper = new QueryWrapper<>();
+        wrapper.eq("game_id", gameId);
+        wrapper.eq("target_id", "");
+        wrapper.orderByAsc("gmt_modified");
+        List<Comment> list = commentService.list(wrapper);
+        if (list == null) {
+            return R.ok().message("评论列表为空");
+        }
+        for (Comment record : list) {
+            record.setGameName(gameService.getById(record.getGameId()).getName());
+            User user = userService.getById(record.getUserId());
+            record.setUsername(user.getUsername());
+            record.setAvatar(user.getAvatar());
+            List<Comment> comments = commentService.childrenList(record.getId());
+            record.setChildren(comments);
+        }
+        return R.ok().data("commentList", list);
     }
 
     /**
@@ -105,7 +136,9 @@ public class CommentController {
      * @return R
      */
     @PostMapping("/save")
-    public R save(@RequestBody Comment comment) {
+    public R save(@RequestBody Comment comment, HttpServletRequest request) {
+        String userId = JwtUtils.getMemberIdByJwtToken(request);
+        comment.setUserId(userId);
         boolean save = commentService.save(comment);
         return save ? R.ok().message("添加成功") : R.error().message("添加失败");
     }

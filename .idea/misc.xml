@@ -10,6 +10,8 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/service-oss/pom.xml" />
+        <option value="$PROJECT_DIR$/service/service-cart/pom.xml" />
+        <option value="$PROJECT_DIR$/service/service-user/pom.xml" />
       </set>
     </option>
   </component>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fc.order.mapper.OrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.fc.order.entity.Order">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="orderNo" column="order_no" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="gameId" column="game_id" jdbcType="VARCHAR"/>
+        <result property="gamePicture" column="game_picture" jdbcType="VARCHAR"/>
+        <result property="totalFee" column="total_fee" jdbcType="DECIMAL"/>
+        <result property="status" column="status" jdbcType="BOOLEAN"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,order_no,user_id,
+        username,phone,game_id,
+        game_picture,total_fee,status,
+        is_deleted,gmt_create,gmt_modified
+    </sql>
+    <select id="getGameList" resultType="com.fc.commonutils.Game" parameterType="java.lang.String">
+        SELECT *
+        FROM game
+        WHERE id IN (SELECT o.game_id game_id
+                     FROM t_order o
+                     WHERE o.user_id = #{userId} AND o.`status` = 1)
+    </select>
+</mapper>

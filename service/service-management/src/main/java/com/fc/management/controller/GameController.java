@@ -2,11 +2,15 @@ package com.fc.management.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fc.commonutils.JwtUtils;
 import com.fc.commonutils.R;
+import com.fc.management.client.OrderClient;
+import com.fc.management.entity.Comment;
 import com.fc.management.entity.Game;
 import com.fc.management.entity.GameBanner;
 import com.fc.management.entity.vo.GameQuery;
 import com.fc.management.entity.vo.GameVo;
+import com.fc.management.service.CommentService;
 import com.fc.management.service.GameBannerService;
 import com.fc.management.service.GameService;
 import com.fc.management.service.TypeService;
@@ -16,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -33,6 +39,65 @@ public class GameController {
     private TypeService typeService;
     @Autowired
     private GameBannerService gameBannerService;
+    @Autowired
+    private OrderClient orderClient;
+    @Autowired
+    private CommentService commentService;
+
+
+
+    @PostMapping("/list")
+    public R list(@RequestBody(required = false) GameQuery gameQuery) {
+        QueryWrapper<Game> wrapper = new QueryWrapper<>();
+        String name;
+        BigDecimal minPrice;
+        BigDecimal maxPrice;
+        String typeId;
+        BigDecimal score;
+        Date begin;
+        Date end;
+        if (gameQuery != null) {
+            name = gameQuery.getName();
+            minPrice = gameQuery.getMinPrice();
+            maxPrice = gameQuery.getMaxPrice();
+            typeId = gameQuery.getTypeId();
+            score = gameQuery.getScore();
+            begin = gameQuery.getBegin();
+            end = gameQuery.getEnd();
+            if (!StringUtils.isEmpty(name)) {
+                wrapper.like("name", name);
+            }
+            if (!StringUtils.isEmpty(typeId)) {
+                wrapper.eq("type_id", typeId);
+            }
+            if (!StringUtils.isEmpty(minPrice)) {
+                wrapper.gt("price", minPrice);
+            }
+            if (!StringUtils.isEmpty(maxPrice)) {
+                wrapper.lt("price", maxPrice);
+            }
+            if (!StringUtils.isEmpty(score) && score.doubleValue() != -1) {
+                wrapper.eq("score", score);
+            }
+            if (!StringUtils.isEmpty(begin)) {
+                wrapper.gt("gmt_modified", begin);
+            }
+            if (!StringUtils.isEmpty(end)) {
+                wrapper.lt("gmt_modified", end);
+            }
+        }
+        wrapper.orderByDesc("score");
+        List<Game> list = gameService.list(wrapper);
+        List<GameVo> voList = new ArrayList<>();
+        for (Game game : list) {
+            GameVo gameVo = new GameVo();
+            BeanUtils.copyProperties(game, gameVo);
+            gameVo.setTypeName(typeService.getById(game.getTypeId()).getName());
+            voList.add(gameVo);
+        }
+        return R.ok().data("gameList", voList);
+    }
+
 
     /**
      * @param current 当前页码
@@ -77,10 +142,10 @@ public class GameController {
                 wrapper.eq("score", score);
             }
             if (!StringUtils.isEmpty(begin)) {
-                wrapper.gt("gmt_create", begin);
+                wrapper.gt("gmt_modified", begin);
             }
             if (!StringUtils.isEmpty(end)) {
-                wrapper.lt("gmt_create", end);
+                wrapper.lt("gmt_modified", end);
             }
         }
 
@@ -110,12 +175,36 @@ public class GameController {
      * @return R
      */
     @GetMapping("/{id}")
-    public R getGameById(@PathVariable("id") String id) {
+    public R getGameById(@PathVariable("id") String id, HttpServletRequest request) {
         Game game = gameService.getById(id);
         if (game == null) {
             throw new BingoException(20001, "没有查到相关记录");
         }
-        return R.ok().data("game", game);
+        String userId = JwtUtils.getMemberIdByJwtToken(request);
+        if (StringUtils.isEmpty(userId)) {
+            return R.error().message("您还没有登录!!!").data("notLogin", true);
+        }
+        boolean isBuy = orderClient.isBuyGame(id, userId);
+        return R.ok().data("game", game).data("isBuy", isBuy);
+    }
+
+    @GetMapping("/game/{id}")
+    public Map<String, Object> getInfoGameId(@PathVariable("id") String id) {
+        //picture, price
+        Game game = gameService.getById(id);
+        if (game == null) {
+            throw new BingoException(20001, "没有查到相关记录");
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", game.getName());
+        //根据 typeId 查询 typeName
+        String typeId = game.getTypeId();
+        String typeName = typeService.getById(typeId).getName();
+        map.put("typeName", typeName);
+        map.put("intro", game.getIntro());
+        map.put("picture", game.getPicture());
+        map.put("price", game.getPrice());
+        return map;
     }
 
     /**
@@ -139,6 +228,12 @@ public class GameController {
     @DeleteMapping("/{id}")
     public R delete(@PathVariable("id") String id) {
         boolean b = gameService.removeById(id);
+        //删除该游戏的评论
+        QueryWrapper<Comment> wrapper = new QueryWrapper<>();
+        wrapper.eq("game_id", id);
+        commentService.remove(wrapper);
+        //删除用户游戏
+        orderClient.deleteByGameId(id);
         return b ? R.ok().message("删除成功") : R.error().message("删除失败");
     }
 

@@ -1,7 +1,10 @@
 package com.fc.management.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fc.management.entity.Game;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.Map;
 
 /**
 * @author V-Savior
@@ -11,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface GameService extends IService<Game> {
 
     String saveInfo(Game game);
+
+    Map<String, Object> getGameFrontList(Page<Game> teacherPage);
 }

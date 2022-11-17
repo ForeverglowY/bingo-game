@@ -14,6 +14,10 @@
     <modules>
         <module>service-management</module>
         <module>service-oss</module>
+        <module>service-sms</module>
+        <module>service-order</module>
+        <module>service-user</module>
+        <module>service-cart</module>
     </modules>
 
     <dependencies>
@@ -32,6 +36,7 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
+
 
         <!--hutool-->
         <dependency>

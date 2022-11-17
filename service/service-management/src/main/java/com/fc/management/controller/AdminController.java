@@ -1,6 +1,7 @@
 package com.fc.management.controller;
 
 import com.fc.commonutils.JwtUtils;
+import com.fc.commonutils.MD5;
 import com.fc.commonutils.R;
 import com.fc.management.entity.Admin;
 import com.fc.management.entity.vo.AdminVo;
@@ -49,6 +50,7 @@ public class AdminController {
 
     @PostMapping("/register")
     public R register(@RequestBody Admin admin) {
+        admin.setPassword(MD5.encrypt(admin.getPassword()));
         adminService.save(admin);
         return R.ok();
     }
